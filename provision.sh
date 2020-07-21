@@ -7,6 +7,10 @@ echo "--- creating data directory "
 mkdir -p ../data/
 
 echo "--- provisioning cluster"
+vagrant up master.qa.kube.io
+
+vagrant ssh master.qa.kube.io -- -t "sudo kubeadm token create --print-join-command > /data/$cluster/kubeadm_join_cmd.sh"
+
 vagrant up
 
 echo "--- copying config from cluster"

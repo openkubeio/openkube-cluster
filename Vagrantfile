@@ -42,6 +42,19 @@ Vagrant.configure("2") do |config|
         vb.memory = servers["memory"] # How much memory to allocate to the VM
 #       vb.customize ["modifyvm", :id, "--cpuexecutioncap", "10"] # Limit to VM to 10% of available 
       end
+	  
+	  if servers["name"].include? "worker" then
+	    srv.vm.provision "shell", inline: <<-SHELL
+		        
+            echo "--- Join as worker node "
+            sudo chmod +x /data/$cluster/kubeadm_join_cmd.sh
+            sudo sh /data/$cluster/kubeadm_join_cmd.sh
+            
+            echo "--- create dummy bootstart if not exist"
+            [ -f /etc/kubernetes/bootstrap-kubelet.conf ] || sudo touch /etc/kubernetes/bootstrap-kubelet.conf
+		   
+		SHELL
+      end
 	  	 
    end
  end
