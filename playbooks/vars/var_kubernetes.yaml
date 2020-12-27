@@ -1,0 +1,5 @@
+---
+create_containers: 4
+default_container_name: kubernetes
+default_container_image: kube_ubuntu
+default_container_command: kubernetes_com

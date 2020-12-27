@@ -1,0 +1,92 @@
+---
+- hosts: "all"
+  become: true
+  vars_files:
+    - vars/var_kubernetes.yaml
+
+  tasks:
+
+    - name: set Hostname
+      shell: "hostname -A"
+      register: host_name
+
+    - name: set host IP
+      shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:"
+      register: ipaddr_ENP0S8
+
+
+- hosts: "proxy"
+  become: true
+  vars_files:
+    - vars/var_kubernetes.yaml
+
+  tasks:
+
+    - name: print host IP
+      debug: 
+        msg: 
+          - "{{ hostvars.master1.host_name.stdout }}  {{ hostvars.master1.ipaddr_ENP0S8.stdout }}"
+          - "{{ hostvars.master2.host_name.stdout }}  {{ hostvars.master2.ipaddr_ENP0S8.stdout }}"
+          - "{{ hostvars.master3.host_name.stdout }}  {{ hostvars.master3.ipaddr_ENP0S8.stdout }}"
+          - "{{ hostvars.worker1.host_name.stdout }}  {{ hostvars.worker1.ipaddr_ENP0S8.stdout }}"
+
+
+- hosts: "master1"
+  become: true
+  vars_files:
+    - vars/var_kubernetes.yaml
+
+  tasks:
+
+    - name: generate certificate-key and set
+      shell: "kubeadm alpha certs certificate-key"
+      register: cert_key
+      
+    - name: dry run kubeadm
+      debug:
+        msg:
+          - "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ipaddr_ENP0S8.stdout }} --apiserver-cert-extra-sans=proxy.openkube.io,{{ hostvars.master1.ipaddr_ENP0S8.stdout }},{{ hostvars.master2.ipaddr_ENP0S8.stdout }},{{ hostvars.master3.ipaddr_ENP0S8.stdout }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint proxy.openkube.io:6443 --upload-certs --certificate-key {{ cert_key.stdout }}"
+
+#   - name: install kubernetes master
+#     shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ipaddr_ENP0S8.stdout }} --apiserver-cert-extra-sans=proxy.openkube.io,{{ hostvars.master1.ipaddr_ENP0S8.stdout }},{{ hostvars.master2.ipaddr_ENP0S8.stdout }},{{ hostvars.master3.ipaddr_ENP0S8.stdout }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint proxy.openkube.io:6443 --upload-certs --certificate-key {{ cert_key.stdout }}"
+#     register: kubeadm_out
+
+    - name: export join command
+      shell: "kubeadm token create --print-join-command"
+      register: kube_join
+ 
+
+ 
+- hosts: "master2,master3"
+  become: true
+  vars_files:
+    - vars/var_kubernetes.yaml
+ 
+  tasks:
+    - name: dry run join as control pane
+      debug:
+        msg:
+          - "{{  hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ ipaddr_ENP0S8.stdout }}   --node-name $(hostname -A) "
+
+#   - name: join as control pane
+#     shell: "{{  hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ ipaddr_ENP0S8.stdout }}   --node-name $(hostname -A) "
+#     register: control_pane_out 
+   
+
+- hosts: "worker,infra"
+  become: true
+  vars_files:
+    - vars/var_kubernetes.yaml
+
+  tasks:
+
+    - name: dry run join as worker 
+      debug:
+        msg:
+          - "{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -A) "
+
+#   - name: join as worker
+#     shell: "{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -A) "
+#     register: worker_out  
+ 
+ 

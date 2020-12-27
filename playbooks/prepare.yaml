@@ -1,0 +1,25 @@
+
+- hosts: all
+  become: true
+  tasks:
+    - name: Disable swap
+      shell: |
+        swapoff -a
+        sed -i  '/ swap / s~^~#~g' /etc/fstab
+
+    - name: Disable ipv6
+      command: "sed -i '/ip6/s/^/#/' /etc/hosts"
+
+    - name: ensure net.bridge.bridge-nf-call-iptables is set to 1
+      sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: 1
+        state: present
+
+    - name: ensure net.ipv4.ip_forward is set to 1
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        state: present
+
+##        /proc/sys/net/ipv4/ip_forward

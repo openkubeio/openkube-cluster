@@ -1,0 +1,38 @@
+- hosts: "master,worker"
+  become: true
+  vars_files:
+    - vars/var_docker.yaml
+    - vars/var_kubernetes.yaml
+
+  tasks:
+
+    - name: set Hostname
+      shell: "hostname -A"
+      register: host_name
+
+    - name: set host IP
+      shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:"
+      register: ipaddr_ENP0S8
+
+#    - name: print host IP
+#      debug: 
+#        msg: "{{ host_name.stdout }}  {{ ipaddr_ENP0S8.stdout }}"
+#
+
+
+- hosts: "proxy"
+  become: true
+  vars_files:
+    - vars/var_docker.yaml
+    - vars/var_kubernetes.yaml
+
+  tasks:
+
+    - name: print host IP
+      debug: 
+        msg: 
+          - "{{ hostvars.master1.host_name.stdout }}  {{ hostvars.master1.ipaddr_ENP0S8.stdout }}"
+          - "{{ hostvars.master2.host_name.stdout }}  {{ hostvars.master2.ipaddr_ENP0S8.stdout }}"
+          - "{{ hostvars.master3.host_name.stdout }}  {{ hostvars.master3.ipaddr_ENP0S8.stdout }}"
+          - "{{ hostvars.worker1.host_name.stdout }}  {{ hostvars.worker1.ipaddr_ENP0S8.stdout }}"
+          - "{{ default_container_name }}  {{ default_container_command }}"

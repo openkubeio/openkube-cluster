@@ -17,10 +17,8 @@ Vagrant.configure("2") do |config|
   config.hostmanager.ignore_private_ip = false
   
   # Create a data dir to mount with in the VM information
-  dirname = File.dirname("./../data/")
-  unless File.directory?(dirname)
-  FileUtils.mkdir_p(dirname)
-  end
+  FileUtils.mkdir_p './../data/'
+
   
   # Loading in the VM configuration information
   servers = YAML.load_file('servers.yaml')
@@ -29,33 +27,26 @@ Vagrant.configure("2") do |config|
     config.vm.define servers["name"] do |srv|
       srv.vm.box = servers["box"] # Speciy the name of the Vagrant box file to use
       srv.vm.hostname = servers["name"] # Set the hostname of the VM
-#     Add a second adapater with a specified IP
+      # Add a second adapater with a specified IP
       srv.vm.network "private_network", ip: servers["ip"], :adapater=>2 
-#     srv.vm.network :forwarded_port, guest: 22, host: servers["port"] # Add a port forwarding rule
+      # srv.vm.network :forwarded_port, guest: 22, host: servers["port"] # Add a port forwarding rule
       srv.vm.synced_folder ".", "/vagrant", type: "virtualbox"
-      srv.vm.synced_folder "./../data/" , "/data", type: "virtualbox", owner: "root", group: "root"
-	  srv.ssh.insert_key = false
-	  
+      srv.vm.synced_folder "./../data/" , "/data", type: "virtualbox", owner: "root", group: "root", mount_options: ["dmode=777,fmode=777"]
+
       srv.vm.provider "virtualbox" do |vb|
         vb.name = servers["name"] # Name of the VM in VirtualBox
         vb.cpus = servers["cpus"] # How many CPUs to allocate to the VM
         vb.memory = servers["memory"] # How much memory to allocate to the VM
-#       vb.customize ["modifyvm", :id, "--cpuexecutioncap", "10"] # Limit to VM to 10% of available 
+    #   vb.customize ["modifyvm", :id, "--cpuexecutioncap", "10"]  # Limit to VM to 10% of available 
       end
-	  
-	  if servers["name"].include? "worker" then
-	    srv.vm.provision "shell", inline: <<-SHELL
-		        
-            echo "--- Join as worker node "
-            sudo chmod +x /data/$cluster/kubeadm_join_cmd.sh
-            sudo sh /data/$cluster/kubeadm_join_cmd.sh
-            
-            echo "--- create dummy bootstart if not exist"
-            [ -f /etc/kubernetes/bootstrap-kubelet.conf ] || sudo touch /etc/kubernetes/bootstrap-kubelet.conf
-		   
-		SHELL
-      end
-	  	 
-   end
- end
+
+      srv.vm.provision "shell", inline: <<-SHELL
+        sudo apt-get update
+        echo 'vagrant:abcd1234' | sudo chpasswd
+        sudo sed -i 's#PasswordAuthentication no#PasswordAuthentication yes#g' /etc/ssh/sshd_config 
+        sudo systemctl restart sshd
+      SHELL
+     
+     end
+  end
 end
