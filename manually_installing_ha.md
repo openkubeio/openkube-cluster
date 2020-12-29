@@ -51,7 +51,7 @@ kubeadm join proxy.openkube.io:6443 --token x03ngl.qxq1onlbo3wqleyj --discovery-
 ---------------------------------------------------------------------------------
 
 
-####  Setup Helm
+####  Setup HA
 
 >https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/high-availability/
 

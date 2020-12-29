@@ -19,13 +19,20 @@ ansible master -m shell -a "hostname -A"
 ```
 ansible-playbook docker.yaml
 ```
+
 ### ansible install kublet
 ```
 ansible-playbook prepare.yaml
 ansible-playbook kubeadm.yaml
 ```
+
 ### ansible ha cluster
 ```
 ansible-playbook haproxy.yaml
 ansible-playbook bootstrap.yaml
+```
+
+### ansible set kubectl
+```
+ansible-playbook kubectl.yaml
 ```

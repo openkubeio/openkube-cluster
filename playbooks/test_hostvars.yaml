@@ -36,3 +36,12 @@
           - "{{ hostvars.master3.host_name.stdout }}  {{ hostvars.master3.ipaddr_ENP0S8.stdout }}"
           - "{{ hostvars.worker1.host_name.stdout }}  {{ hostvars.worker1.ipaddr_ENP0S8.stdout }}"
           - "{{ default_container_name }}  {{ default_container_command }}"
+
+
+- hosts: all
+  become: true
+  tasks:
+
+    - name: print Hostname
+      debug: "msg={{ ansible_hostname }}"
+

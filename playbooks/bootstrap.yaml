@@ -15,22 +15,6 @@
       register: ipaddr_ENP0S8
 
 
-- hosts: "proxy"
-  become: true
-  vars_files:
-    - vars/var_kubernetes.yaml
-
-  tasks:
-
-    - name: print host IP
-      debug: 
-        msg: 
-          - "{{ hostvars.master1.host_name.stdout }}  {{ hostvars.master1.ipaddr_ENP0S8.stdout }}"
-          - "{{ hostvars.master2.host_name.stdout }}  {{ hostvars.master2.ipaddr_ENP0S8.stdout }}"
-          - "{{ hostvars.master3.host_name.stdout }}  {{ hostvars.master3.ipaddr_ENP0S8.stdout }}"
-          - "{{ hostvars.worker1.host_name.stdout }}  {{ hostvars.worker1.ipaddr_ENP0S8.stdout }}"
-
-
 - hosts: "master1"
   become: true
   vars_files:

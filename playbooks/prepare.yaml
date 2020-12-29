@@ -22,4 +22,3 @@
         value: 1
         state: present
 
-##        /proc/sys/net/ipv4/ip_forward
