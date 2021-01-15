@@ -1,0 +1,30 @@
+---
+##- hosts: nfs
+##  become: true
+##  roles:
+##  - nfs
+##
+- hosts: "lbr"
+  become: true
+  strategy: debug
+  roles:
+  - haproxy
+  tasks:
+  - debug: "msg={{ ansible_hostname }}"
+
+##- hosts: "master, worker"
+##  become: true
+##  roles:
+##  - docker
+##  - prepare-node
+##  - bootstrap
+ 
+
+##- name: setup kubectl
+##  import_playbook: kubectl.yaml
+##
+
+
+
+  
+

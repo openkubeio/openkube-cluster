@@ -1,5 +1,5 @@
 
-- hosts: all
+- hosts: "master, management, worker"
   become: true
   tasks:
     - name: Disable swap

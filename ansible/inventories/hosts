@@ -1,0 +1,20 @@
+[capasity]
+nfs       ansible_ssh_host=quicks-oc-1090.openkube.io
+lbr       ansible_ssh_host=quicks-oc-1090.openkube.io
+
+[controller]
+cntrl     ansible_ssh_host=quicks-oc-1090.openkube.io
+
+[master]
+master1   ansible_ssh_host=master1.openkube.io  
+master2   ansible_ssh_host=master2.openkube.io  
+master3   ansible_ssh_host=master3.openkube.io  
+
+[worker]
+worker1   ansible_ssh_host=worker1.openkube.io
+worker2   ansible_ssh_host=worker2.openkube.io
+
+[all:vars]
+ansible_connection=ssh 
+ansible_user=vagrant 
+ansible_password=abcd1234

@@ -1,0 +1,20 @@
+- name: install nfs
+  apt: name="nfs-server" state=present update_cache=yes
+  notify: status nfs-server
+
+- name: install nfs client
+  apt: name="nfs-common" state=present update_cache=yes
+
+- name: configure nfs server
+  shell: |
+    sudo mkdir /nfs/kubedata -p
+    sudo chown nobody:nogroup /nfs/kubedata
+
+    sudo tee -a /etc/exports << EOF
+    /nfs/kubedata  *(rw,sync,no_subtree_check,no_root_squash,no_all_squash,insecure)
+    EOF
+    
+    sudo exportfs -a
+    sudo exportfs -rva
+  notify: restart nfs-server
+

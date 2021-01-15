@@ -1,9 +1,15 @@
 ---
-- name: proxy.openkube.io
+- name: quicks-oc-1090.openkube.io
   box: ubuntu/xenial64
   cpus: 1
   memory: 1024
-  ip: 192.172.100.100
+  ip: 192.172.10.90
+  port: 10122
+- name: infra1.openkube.io
+  box: ubuntu/xenial64
+  cpus: 1
+  memory: 1024
+  ip: 192.172.100.90
   port: 10122
 - name: master1.openkube.io
   box: ubuntu/xenial64
@@ -23,27 +29,28 @@
   memory: 2048
   ip: 192.172.100.103
   port: 10122
-- name: infra1.openkube.io
+- name: management1.openkube.io
   box: ubuntu/xenial64
   cpus: 1
   memory: 1024
   ip: 192.172.100.104
   port: 10122
-- name: infra2.openkube.io
+- name: management2.openkube.io
   box: ubuntu/xenial64
   cpus: 1
   memory: 1024
   ip: 192.172.100.105
   port: 10122
-- name: infra3.openkube.io
+- name: worker1.openkube.io
   box: ubuntu/xenial64
   cpus: 1
   memory: 1024
   ip: 192.172.100.106
   port: 10122
-- name: worker1.openkube.io
+- name: worker2.openkube.io
   box: ubuntu/xenial64
   cpus: 1
   memory: 1024
-  ip: 192.172.100.200
+  ip: 192.172.100.107
   port: 10122
+

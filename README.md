@@ -5,34 +5,25 @@ provision-machines.sh
 ```
 
 ### ansible check all virtual machines		
-
 ```
 ansible master -i inventories -m shell -a "date"
-
 export ANSIBLE_CONFIG=$(pwd)/ansible.cfg
-
 ansible master -m shell -a "hostname -A"
+ansible master -m debug -a "msg='{{ hostvars }}'"
+ansible master -m debug -a "msg='{{ hostvars.master2.ansible_ssh_host }}'"
+ansible master -m debug -a "msg='{{ groups.master }}'"
 ```
 
-### ansible install docker
-
 ```
-ansible-playbook docker.yaml
-```
-
-### ansible install kublet
-```
-ansible-playbook prepare.yaml
-ansible-playbook kubeadm.yaml
+cd playbooks/roles/
+ansible-galaxy init test
+ansible-playbook test.yaml
 ```
 
-### ansible ha cluster
-```
-ansible-playbook haproxy.yaml
-ansible-playbook bootstrap.yaml
-```
 
-### ansible set kubectl
+
+### ansible install 
+
 ```
-ansible-playbook kubectl.yaml
+ansible-playbook setup.yaml
 ```

@@ -1,0 +1,41 @@
+---
+
+- name: Install required system packages
+  apt: name={{ item }} state=latest update_cache=yes
+  loop: [ 'apt-transport-https', 'ca-certificates', 'curl', 'software-properties-common']
+
+- name: Add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Current Ubuntu release version into a variable
+  shell: lsb_release -cs
+  register: ubuntu_version
+
+- name: Add Docker Repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable
+    state: present
+
+- name: Desired Docker version into a variable
+  shell: "apt-cache madison docker-ce | grep 17. | grep  ubuntu-xenial | head -1 | awk '{print $3}'"
+  register: docker_version
+
+- name: Update apt and install docker-ce
+  apt: 
+    update_cache: yes 
+    name: "docker-ce={{ docker_version.stdout }}"
+    state: present
+
+- name: Creating a file with content
+  copy:
+    src: daemon.json
+    dest: "/etc/docker/daemon.json"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart docker
+
+
+

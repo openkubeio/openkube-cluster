@@ -1,0 +1,35 @@
+---
+    - name: Add Kubernetes official GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+
+
+    - name: Add Kubernetes Repository
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+
+
+    - name: Run the equivalent of "apt-get update" as a separate step
+      apt: update_cache=yes
+
+
+    - name: Install required kube packages
+      apt: name={{ item }} state=present update_cache=true force=yes
+      loop: [ "kubeadm=1.17.0-00","kubelet=1.17.0-00","kubectl=1.17.0-00" ]
+
+
+    - name: Cast host IP in variable
+      shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:"
+      register: ipaddr_ENP0S8
+
+
+    - name: Update kubeadm.conf
+      blockinfile:
+        path: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+        insertafter: [Service]
+        block: |
+          Environment="cgroup-driver=systemd"
+          Environment="KUBELET_EXTRA_ARGS=--node-ip={{ ipaddr_ENP0S8.stdout }}"
+      notify: daemon-reload
