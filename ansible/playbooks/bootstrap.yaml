@@ -1,0 +1,24 @@
+---
+- hosts: "capasity"
+  become: true
+  tasks:
+  - include_role:
+      name: haproxy
+    when: "inventory_hostname == 'lbr'"
+  - include_role:
+      name: nfs
+    when: "inventory_hostname == 'nfs'"
+  
+
+- hosts: "master, worker"
+  become: true
+  roles:
+  - prerequisite
+  - docker
+  - kube
+  tasks:
+  - name: nfs-client
+    apt: name="nfs-common" state=present update_cache=yes
+ 
+- name: setup kubectl
+  import_playbook: kubectl.yaml

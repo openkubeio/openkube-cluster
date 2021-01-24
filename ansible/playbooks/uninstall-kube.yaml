@@ -1,12 +1,11 @@
 
-- hosts: "master, worker, management"
+- hosts: "master, worker"
   become: true
   tasks:
   - name: reset kubeadm 
-    shell: kubeadm reset -f
+    shell: "kubeadm reset -f "
   - name: remove kubelet
-    shell: apt remove kubelet -y
+    shell: "apt remove kubelet -y "
   - name: remove kubectl 
-    shell: 
-    - "apt remove kubectl -y"
-    - "rm-rf /root/.kube"
+    shell: "apt remove kubectl -y "
+  - shell: "rm -rf /root/.kube"

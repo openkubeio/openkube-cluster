@@ -5,12 +5,6 @@
   memory: 1024
   ip: 192.172.10.90
   port: 10122
-- name: infra1.openkube.io
-  box: ubuntu/xenial64
-  cpus: 1
-  memory: 1024
-  ip: 192.172.100.90
-  port: 10122
 - name: master1.openkube.io
   box: ubuntu/xenial64
   cpus: 2
@@ -29,18 +23,6 @@
   memory: 2048
   ip: 192.172.100.103
   port: 10122
-- name: management1.openkube.io
-  box: ubuntu/xenial64
-  cpus: 1
-  memory: 1024
-  ip: 192.172.100.104
-  port: 10122
-- name: management2.openkube.io
-  box: ubuntu/xenial64
-  cpus: 1
-  memory: 1024
-  ip: 192.172.100.105
-  port: 10122
 - name: worker1.openkube.io
   box: ubuntu/xenial64
   cpus: 1
@@ -52,5 +34,11 @@
   cpus: 1
   memory: 1024
   ip: 192.172.100.107
+  port: 10122
+- name: worker3.openkube.io
+  box: ubuntu/xenial64
+  cpus: 1
+  memory: 1024
+  ip: 192.172.100.108
   port: 10122
 

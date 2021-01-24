@@ -1,0 +1,49 @@
+
+- name: install haproxy
+  apt: name="haproxy=1.6.*" state=present update_cache=yes force=yes
+
+- name: Update /etc/haproxy/haproxy.cfg
+  blockinfile:
+    path: /etc/haproxy/haproxy.cfg
+    insertafter: EOF
+    block: |
+      ## Updated by Ansible ##
+
+      frontend web_client
+          bind *:80
+          default_backend web_client_nodes
+      backend web_client_nodes
+          balance roundrobin
+          server web1  {{ hostvars.worker1.ansible_ssh_host }}:30080 check
+          server web2  {{ hostvars.worker2.ansible_ssh_host }}:30080 check
+      frontend web_secure
+          bind *:443
+          option tcplog
+          mode tcp
+          default_backend web_secure_nodes
+      backend web_secure_nodes
+          mode tcp
+          balance roundrobin
+          option ssl-hello-chk
+          server web-secure1 {{ hostvars.worker1.ansible_ssh_host }}:30443 check
+          server web-secure2 {{ hostvars.worker2.ansible_ssh_host }}:30443 check      
+      frontend master_client
+          bind *:6443
+          option tcplog
+          mode tcp
+          default_backend master_nodes
+      backend master_nodes
+          mode tcp
+          balance roundrobin
+          option ssl-hello-chk
+          server master1 {{ hostvars.master1.ansible_ssh_host }}:6443 check
+          server master2 {{ hostvars.master2.ansible_ssh_host }}:6443 check
+          server master3 {{ hostvars.master3.ansible_ssh_host }}:6443 check
+  notify:
+  - restart haproxy
+
+
+- name: Check PID of existing haproxy process
+  shell: "ps -ef | grep haproxy"
+  register: haproxy_status
+- debug: "msg={{ haproxy_status.stdout }}"

@@ -1,0 +1,36 @@
+frontend web_client
+          bind *:80
+          default_backend web_client_nodes
+      backend web_client_nodes
+          balance roundrobin
+{% for host in servers_to_worker %}
+{% if hostvars[host]['dedicated'] == 'proxy' %}
+          server {{ host }}   {{ hostvars[host].ansible_ssh_host}}:30080 check 
+{%  endif %}
+{% endfor %}
+      frontend web_secure
+          bind *:443
+          option tcplog
+          mode tcp
+          default_backend web_secure_nodes
+      backend web_secure_nodes
+          mode tcp
+          balance roundrobin
+          option ssl-hello-chk
+{% for host in servers_to_worker %}
+{% if hostvars[host]['dedicated'] == 'proxy' %}
+          server ssl-{{ host }}   {{ hostvars[host].ansible_ssh_host}}:30443 check 
+{%  endif %}
+{% endfor %}   
+      frontend master_client
+          bind *:6443
+          option tcplog
+          mode tcp
+          default_backend master_nodes
+      backend master_nodes
+          mode tcp
+          balance roundrobin
+          option ssl-hello-chk
+{% for host in servers_to_master %}
+          server {{ host }}   {{ hostvars[host].ansible_ssh_host}}:6443 check 
+{% endfor %}

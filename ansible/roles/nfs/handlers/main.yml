@@ -3,8 +3,3 @@
   systemd:
     name: nfs-server
     state: restarted 
-
-- name: status nfs-server
-  systemd:
-    name: nfs-server
-    state: status 

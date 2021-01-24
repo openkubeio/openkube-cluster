@@ -1,3 +1,0 @@
----
-LOAD_BALANCER_DNS: infra1.openkube.io
-LOAD_BALANCER_PORT: 6443

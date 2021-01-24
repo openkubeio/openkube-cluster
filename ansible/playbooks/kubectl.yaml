@@ -1,21 +1,25 @@
 
-- hosts: "cntrl, master"
+- hosts: "cntrl"
   become: true
   tasks:
-  
   - name: install kubectl
     shell: |
       curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl
       chmod +x ./kubectl
       sudo mv ./kubectl /usr/bin/kubectl
       mkdir -p ~/.kube
-    when: ansible_hostname == 'infra1'
   
+
+- hosts: "master1"
+  become: true
+  tasks:
   - name: Fetch the file from the master to buffer
     fetch: src=/etc/kubernetes/admin.conf  dest=/tmp/ flat=yes
-    when: ansible_hostname == 'master1'
   
+
+- hosts: "cntrl"
+  become: true
+  tasks:
   - name: Copy the file from buffer to proxy
     copy: src=/tmp/admin.conf   dest=/root/.kube/config
-    when: ansible_hostname == 'infra1'
 

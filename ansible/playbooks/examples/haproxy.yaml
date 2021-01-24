@@ -1,9 +1,10 @@
 
 - hosts: proxy
   become: true
-  vars_files:
-    - vars/var_kubernetes.yaml
-
+  vars:
+    ansible_host: "{{ inventory_hostname }}"
+    ansible_tags: "{{ hostvars[inventory_hostname]['dedicated'] }}"
+    ansible_proxy: ""
   tasks:
 
     - name: install haproxy
@@ -24,9 +25,8 @@
               mode tcp
               balance roundrobin
               option ssl-hello-chk
-              server ingcntrl01 infra1.openkube.io:30001 check
-              server ingcntr02 infra2.openkube.io:30001 check
-          
+              server proxy01 infra1.openkube.io:30001 check
+              server proxy02 infra2.openkube.io:30001 check
           frontend kube_client
               bind *:6443
               option tcplog

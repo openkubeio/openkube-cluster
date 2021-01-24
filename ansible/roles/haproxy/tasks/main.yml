@@ -1,3 +1,2 @@
 ---
 - import_tasks: haproxy.yaml
-- import_tasks: nfs.yaml
