@@ -20,4 +20,4 @@ worker3   ansible_ssh_host=worker3.openkube.io
 [all:vars]
 ansible_connection=ssh 
 ansible_user=vagrant 
-ansible_password=abcd1234
+ansible_password=
