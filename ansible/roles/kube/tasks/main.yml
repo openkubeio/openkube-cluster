@@ -1,10 +1,6 @@
 ---
 - import_tasks: kubeadm.yaml
 
-- shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:"
-  register: ipaddr_ENP0S8
-
-
 - name: generate certificate-key
   shell: "kubeadm alpha certs certificate-key"
   register: cert_key
@@ -13,26 +9,27 @@
 - name: print kubeadm
   debug:
     msg:
-    - "   kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ipaddr_ENP0S8.stdout }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ssh_ansible_host }},{{ hostvars.master1.ipaddr_ENP0S8.stdout }},{{ hostvars.master2.ipaddr_ENP0S8.stdout }},{{ hostvars.master3.ipaddr_ENP0S8.stdout }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ssh_ansible_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
-  when: ansible_hostname == 'master1'
+    - "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ansible_ssh_host }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ansible_ssh_host }},{{ hostvars.master1.ansible_ssh_host }},{{ hostvars.master2.ansible_ssh_host }},{{ hostvars.master3.ansible_ssh_host }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ansible_ssh_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
+  when: inventory_hostname == 'master1'
+
 - name: install kubernetes master
-  shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ipaddr_ENP0S8.stdout }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ssh_ansible_host }},{{ hostvars.master1.ipaddr_ENP0S8.stdout }},{{ hostvars.master2.ipaddr_ENP0S8.stdout }},{{ hostvars.master3.ipaddr_ENP0S8.stdout }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ssh_ansible_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
+  shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ansible_ssh_host }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ansible_ssh_host }},{{ hostvars.master1.ansible_ssh_host }},{{ hostvars.master2.ansible_ssh_host }},{{ hostvars.master3.ansible_ssh_host }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ansible_ssh_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
   register: kubeadm_out
   when: inventory_hostname == 'master1'
+
+
 
 - name: export join command
   shell: "kubeadm token create --print-join-command --v=9"
   register: kube_join
   when: inventory_hostname == 'master1'
 
-
-
 - name: print join as control pane
-  debug: msg="'{{  hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ ipaddr_ENP0S8.stdout }}   --node-name $(hostname -A)'"
+  debug: msg="'{{ hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ hostvars[inventory_hostname].ansible_ssh_host }}   --node-name $(hostname -A)'"
   when: inventory_hostname in  ['master2','master3']
 
 - name: join as control pane
-  shell: "{{  hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ ipaddr_ENP0S8.stdout }}   --node-name $(hostname -A) "
+  shell: "{{ hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ hostvars[inventory_hostname].ansible_ssh_host }}   --node-name $(hostname -A) "
   register: control_pane_out 
   when: inventory_hostname in  ['master2','master3']
 
@@ -40,9 +37,9 @@
 
 - name: print join as worker 
   debug: "msg='{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -A)'"
-  when: inventory_hostname is match ('worker') or ansible_hostname is match ('management')
+  when: inventory_hostname is match ('worker') 
 
 - name: join as worker
   shell: "{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -A) "
   register: worker_out  
-  when: inventory_hostname is match ('worker') or ansible_hostname is match ('management') 
+  when: inventory_hostname is match ('worker') 

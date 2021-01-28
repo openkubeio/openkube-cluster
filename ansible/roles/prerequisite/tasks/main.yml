@@ -12,6 +12,11 @@
 - name: Enable iptables port forward
   command: "iptables -P FORWARD ACCEPT"
 
+- name: Ensure br_netfilter is enabled
+  modprobe:
+    name: br_netfilter
+    state: present
+
 - name: ensure net.bridge.bridge-nf-call-iptables is set to 1
   sysctl:
     name: net.bridge.bridge-nf-call-iptables

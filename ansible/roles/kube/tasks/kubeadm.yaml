@@ -20,9 +20,9 @@
       loop: [ "kubeadm=1.17.0-00","kubelet=1.17.0-00","kubectl=1.17.0-00" ]
 
 
-    - name: Cast host IP in variable
-      shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:"
-      register: ipaddr_ENP0S8
+ #  - name: Cast host IP in variable
+ #    shell: "ifconfig enp0s8 | grep Mask | awk '{print $2}'| cut -f2 -d:"
+ #    register: ipaddr_ENP0S8
 
 
     - name: Update kubeadm.conf
@@ -31,5 +31,5 @@
         insertafter: [Service]
         block: |
           Environment="cgroup-driver=systemd"
-          Environment="KUBELET_EXTRA_ARGS=--node-ip={{ ipaddr_ENP0S8.stdout }}"
+          Environment="KUBELET_EXTRA_ARGS=--node-ip={{  hostvars[inventory_hostname].ansible_ssh_host }}"
       notify: daemon-reload

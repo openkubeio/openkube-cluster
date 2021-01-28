@@ -23,3 +23,21 @@
   - name: Copy the file from buffer to proxy
     copy: src=/tmp/admin.conf   dest=/root/.kube/config
 
+- hosts: "cntrl"
+  become: true
+  tasks:
+  - shell: kubectl get nodes 
+    register: get_nodes
+  - debug: msg={{ get_nodes.stdout }}
+
+  - shell: kubectl get pods -A
+    register: get_pods
+  - debug: msg={{ get_pods.stdout }}
+
+  - shell: kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
+    register: apply_calico
+  - debug: msg={{ apply_calico.stdout }}
+
+
+
+

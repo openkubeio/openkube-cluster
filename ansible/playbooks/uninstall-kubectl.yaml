@@ -1,0 +1,8 @@
+
+- hosts: "cntrl"
+  become: true
+  tasks:
+  - name: remove kubectl
+    shell: rm -f /usr/bin/kubectl
+  - name: remove config
+    shell: rm -f /root/.kube/config

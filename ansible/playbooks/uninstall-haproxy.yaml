@@ -1,0 +1,9 @@
+- hosts: "lbr"
+  become: true
+  tasks:
+  - name: Uninstall just haproxy
+    shell: apt-get remove haproxy -y
+  - name: Uninstall haproxy and its dependencies
+    shell: apt-get purge --auto-remove haproxy -y 
+  - name: Purging your config/data too # Caution! Purged config/data can not be restored by reinstalling the package.
+    shell: apt-get purge haproxy -y

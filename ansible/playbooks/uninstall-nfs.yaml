@@ -1,0 +1,13 @@
+- hosts: "nfs"
+  become: true
+  tasks:
+  - name: Uninstall nfs-server
+    shell: apt-get remove nfs-server
+  - name: "remove nfs shared dir from /etc/exports"
+    lineinfile:
+      path: /etc/exports
+      # String to Search
+      regexp: "/nfs/kubedata" 
+      # State is set to Absent to remove if the Searching Line is found
+      state: absent
+      backup: yes

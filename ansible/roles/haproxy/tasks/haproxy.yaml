@@ -7,6 +7,7 @@
     path: /etc/haproxy/haproxy.cfg
     insertafter: EOF
     block: "{{ lookup('template', 'proxy.template') }}"
+
   notify:
   - restart haproxy
 

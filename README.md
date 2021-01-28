@@ -1,9 +1,9 @@
-### provision all virtual machines
+### provision all virtual machines with vagrant
 ```
 provision-machines.sh
 ```
 
-### ansible check all virtual machines		
+### ansible check all virtual machines are rechable	
 ```
 export ANSIBLE_CONFIG=$(pwd)/ansible.cfg
 ansible all -m ping 

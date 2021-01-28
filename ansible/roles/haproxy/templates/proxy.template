@@ -4,9 +4,11 @@ frontend web_client
       backend web_client_nodes
           balance roundrobin
 {% for host in servers_to_worker %}
-{% if hostvars[host]['dedicated'] == 'proxy' %}
+{% if 'dedicated' in hostvars[host]|list %}
+{% if hostvars[host]['dedicated'] is search("proxy")  %}
           server {{ host }}   {{ hostvars[host].ansible_ssh_host}}:30080 check 
-{%  endif %}
+{% endif %}
+{% endif %}
 {% endfor %}
       frontend web_secure
           bind *:443
@@ -18,8 +20,10 @@ frontend web_client
           balance roundrobin
           option ssl-hello-chk
 {% for host in servers_to_worker %}
-{% if hostvars[host]['dedicated'] == 'proxy' %}
+{% if 'dedicated' in hostvars[host]|list %}
+{% if hostvars[host]['dedicated'] is search("proxy") %}
           server ssl-{{ host }}   {{ hostvars[host].ansible_ssh_host}}:30443 check 
+{%  endif %}
 {%  endif %}
 {% endfor %}   
       frontend master_client
