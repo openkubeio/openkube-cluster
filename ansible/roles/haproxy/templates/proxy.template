@@ -1,7 +1,8 @@
-frontend web_client
+{% if servers_to_worker|length >=1 %}
+      frontend web_client
           bind *:80
           default_backend web_client_nodes
-      backend web_client_nodes
+          backend web_client_nodes
           balance roundrobin
 {% for host in servers_to_worker %}
 {% if 'dedicated' in hostvars[host]|list %}
@@ -23,11 +24,12 @@ frontend web_client
 {% if 'dedicated' in hostvars[host]|list %}
 {% if hostvars[host]['dedicated'] is search("proxy") %}
           server ssl-{{ host }}   {{ hostvars[host].ansible_ssh_host}}:30443 check 
-{%  endif %}
-{%  endif %}
-{% endfor %}   
+{% endif %}
+{% endif %}
+{% endfor %}  
+{% endif %}
       frontend master_client
-          bind *:6443
+          bind *:8443
           option tcplog
           mode tcp
           default_backend master_nodes

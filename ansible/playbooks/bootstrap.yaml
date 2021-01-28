@@ -22,6 +22,5 @@
 
 
  
-#- name: setup kubectl
-#  import_playbook: kubectl.yaml
-#
+- name: setup kubectl
+  import_playbook: kubectl.yaml
