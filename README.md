@@ -3,6 +3,12 @@
 provision-machines.sh
 ```
 
+### setup ssh key-gen 
+
+#ssh-agent bash
+#ssh-add /gitlab.pem
+
+
 ### ansible check all virtual machines are rechable	
 ```
 export ANSIBLE_CONFIG=$(pwd)/ansible.cfg

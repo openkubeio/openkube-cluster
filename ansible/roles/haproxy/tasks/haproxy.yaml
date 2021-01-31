@@ -1,6 +1,12 @@
 
-- name: install haproxy
-  apt: name="haproxy=1.6.*" state=present update_cache=yes force=yes
+- name: "install haproxy version {{ _version }}"
+  apt: name="haproxy={{ _version }}.*" state=present update_cache=yes force=yes
+  when: _version is defined
+
+- name: install haproxy latest
+  apt: name=haproxy state=present update_cache=yes
+  when: _version is not defined
+  
 
 - name: Update /etc/haproxy/haproxy.cfg
   blockinfile:
@@ -10,6 +16,7 @@
 
   notify:
   - restart haproxy
+
 
 - name: Check PID of existing haproxy process
   shell: "ps -ef | grep haproxy"

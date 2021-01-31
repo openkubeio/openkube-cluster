@@ -31,5 +31,5 @@
         insertafter: [Service]
         block: |
           Environment="cgroup-driver=systemd"
-          Environment="KUBELET_EXTRA_ARGS=--node-ip={{  hostvars[inventory_hostname].ansible_ssh_host }}"
+          Environment="KUBELET_EXTRA_ARGS=--node-ip={{  hostvars[inventory_hostname].ip }}"
       notify: daemon-reload

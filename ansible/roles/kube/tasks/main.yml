@@ -6,38 +6,39 @@
   register: cert_key
   when: inventory_hostname == 'master1'
 
+
 - name: print kubernetes for 3 master nodes
   debug:
     msg:
-    - "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ansible_ssh_host }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ansible_ssh_host }},{{ hostvars.master1.ansible_ssh_host }},{{ hostvars.master2.ansible_ssh_host }},{{ hostvars.master3.ansible_ssh_host }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ansible_ssh_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
+    - "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ip }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ip }},{{ hostvars.master1.ip }},{{ hostvars.master2.ip }},{{ hostvars.master3.ip }}  --node-name $(hostname -s)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ip }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
   when:
     - inventory_hostname == 'master1' 
     - groups['master']|length == 3
 
-
 - name: install kubernetes for 3 master nodes
-  shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ansible_ssh_host }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ansible_ssh_host }},{{ hostvars.master1.ansible_ssh_host }},{{ hostvars.master2.ansible_ssh_host }},{{ hostvars.master3.ansible_ssh_host }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ansible_ssh_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
+  shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ip }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ip }},{{ hostvars.master1.ip }},{{ hostvars.master2.ip }},{{ hostvars.master3.ip }}  --node-name $(hostname -s)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ip }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
   register: kubeadm_out
   when: 
     - inventory_hostname == 'master1' 
     - groups['master']|length == 3
+
 
 
 - name: print kubernetes for 1 master node
   debug:
     msg:
-    - "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ansible_ssh_host }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ansible_ssh_host }},{{ hostvars.master1.ansible_ssh_host }}  --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ansible_ssh_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
+    - "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ip }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ip }},{{ hostvars.master1.ip }}  --node-name $(hostname -s)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ip }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}  --v=5"
   when:
     - inventory_hostname == 'master1' 
     - groups['master']|length == 1
 
-
 - name: install kubernetes for 1 master node
-  shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ansible_ssh_host }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ansible_ssh_host }},{{ hostvars.master1.ansible_ssh_host }} --node-name $(hostname -A)  --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ansible_ssh_host }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }}"
+  shell: "kubeadm init --kubernetes-version v1.17.0 --apiserver-advertise-address={{ hostvars.master1.ip }} --apiserver-cert-extra-sans={{ hostvars.cntrl.ip }},{{ hostvars.master1.ip }} --node-name $(hostname -s)   --pod-network-cidr 10.10.0.0/16 --service-cidr  10.150.0.0/16  --control-plane-endpoint {{ hostvars.cntrl.ip }}:{{ LOAD_BALANCER_PORT }} --upload-certs --certificate-key {{ cert_key.stdout }} --v=5"
   register: kubeadm_out
   when: 
     - inventory_hostname == 'master1' 
     - groups['master']|length == 1
+
 
 
 
@@ -47,24 +48,24 @@
   when: inventory_hostname == 'master1'
 
 
+
 - name: print join as control pane
-  debug: msg="'{{ hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ hostvars[inventory_hostname].ansible_ssh_host }}   --node-name $(hostname -A)'"
+  debug: msg="'{{ hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ hostvars[inventory_hostname].ip }}   --node-name $(hostname -s)'"
   when: inventory_hostname in  ['master2','master3']
 
 - name: execute join as control pane
-  shell: "{{ hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ hostvars[inventory_hostname].ansible_ssh_host }}   --node-name $(hostname -A) "
+  shell: "{{ hostvars.master1.kube_join.stdout }}  --control-plane --certificate-key {{ hostvars.master1.cert_key.stdout }} --apiserver-advertise-address={{ hostvars[inventory_hostname].ip }}   --node-name $(hostname -s) "
   register: control_pane_out 
   when: inventory_hostname in  ['master2','master3']
 
 
 
 - name: print join as worker 
-  debug: "msg='{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -A)'"
+  debug: "msg='{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -s)'"
   when: 
   - inventory_hostname is match ('worker')
 
-
 - name: execute join as worker
-  shell: "{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -A) "
+  shell: "{{ hostvars.master1.kube_join.stdout }}  --node-name $(hostname -s) "
   register: worker_out  
   when: inventory_hostname is match ('worker') 

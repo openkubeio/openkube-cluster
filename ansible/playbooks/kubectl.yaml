@@ -1,4 +1,3 @@
-
 - hosts: "cntrl"
   become: true
   tasks:
@@ -23,6 +22,8 @@
   - name: Copy the file from buffer to proxy
     copy: src=/tmp/admin.conf   dest=/root/.kube/config
 
+
+
 - hosts: "cntrl"
   become: true
   tasks:
@@ -37,6 +38,32 @@
   - shell: kubectl apply -f https://docs.projectcalico.org/v3.11/manifests/calico.yaml
     register: apply_calico
   - debug: msg={{ apply_calico.stdout }}
+
+
+
+
+- hosts: cntrl
+  become: true
+  vars:
+    - tags:
+      - proxy
+      - nfs
+  tasks:
+  - shell: "kubectl label node {{ item[0] }}  infra:{{ item[1] }}=true"
+    when: 
+    - hostvars[item.0].dedicated is defined
+    - hostvars[item.0]['dedicated'] is search(item.1)
+    with_nested:
+    - "{{ groups['worker'] }}"
+    - "{{ tags }}"
+
+  - shell: "kubectl taint node {{ item }}  dedicated=infra:NoSchedule"
+    when: 
+    - hostvars[item].dedicated is defined
+    with_items:
+    - "{{ groups['worker'] }}"
+
+
 
 
 

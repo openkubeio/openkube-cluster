@@ -7,7 +7,7 @@
 {% for host in servers_to_worker %}
 {% if 'dedicated' in hostvars[host]|list %}
 {% if hostvars[host]['dedicated'] is search("proxy")  %}
-          server {{ host }}   {{ hostvars[host].ansible_ssh_host}}:30080 check 
+          server {{ host }}   {{ hostvars[host].ip}}:30080 check 
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -23,7 +23,7 @@
 {% for host in servers_to_worker %}
 {% if 'dedicated' in hostvars[host]|list %}
 {% if hostvars[host]['dedicated'] is search("proxy") %}
-          server ssl-{{ host }}   {{ hostvars[host].ansible_ssh_host}}:30443 check 
+          server ssl-{{ host }}   {{ hostvars[host].ip}}:30443 check 
 {% endif %}
 {% endif %}
 {% endfor %}  
@@ -38,5 +38,5 @@
           balance roundrobin
           option ssl-hello-chk
 {% for host in servers_to_master %}
-          server {{ host }}   {{ hostvars[host].ansible_ssh_host}}:6443 check 
+          server {{ host }}   {{ hostvars[host].ip}}:6443 check 
 {% endfor %}
