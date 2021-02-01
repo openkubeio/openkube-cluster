@@ -3,11 +3,6 @@
 provision-machines.sh
 ```
 
-### setup ssh key-gen 
-
-#ssh-agent bash
-#ssh-add /gitlab.pem
-
 
 ### ansible check all virtual machines are rechable	
 ```
@@ -16,6 +11,14 @@ ansible all -m ping
 ```
 
 ### ansible bootstrap clutster 
+
+####Install kubernetes cluster
 ```
+
 ansible-playbook ansible/playbooks/bootstrap.yaml
+```
+
+####Setup kubectl and node configurations
+```
+ansible-playbook ansible/playbooks/kubectl.yaml
 ```

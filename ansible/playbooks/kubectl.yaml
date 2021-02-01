@@ -40,18 +40,16 @@
   - debug: msg={{ apply_calico.stdout }}
 
 
-
-
-- hosts: cntrl
+- hosts: "cntrl"
   become: true
   vars:
-    - tags:
-      - proxy
-      - nfs
+    tags:
+    - proxy
+    - nfs
   tasks:
-  - shell: "kubectl label node {{ item[0] }}  infra:{{ item[1] }}=true"
+  - shell: "kubectl label node {{ item[0] }}  infra/{{ item[1] }}=true"
     when: 
-    - hostvars[item.0].dedicated is defined
+    - hostvars[item.0]['dedicated'] is defined
     - hostvars[item.0]['dedicated'] is search(item.1)
     with_nested:
     - "{{ groups['worker'] }}"
@@ -62,9 +60,3 @@
     - hostvars[item].dedicated is defined
     with_items:
     - "{{ groups['worker'] }}"
-
-
-
-
-
-
