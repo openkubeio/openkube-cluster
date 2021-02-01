@@ -12,13 +12,12 @@ ansible all -m ping
 
 ### ansible bootstrap clutster 
 
-####Install kubernetes cluster
+Install kubernetes cluster
 ```
-
 ansible-playbook ansible/playbooks/bootstrap.yaml
 ```
 
-####Setup kubectl and node configurations
+Setup kubectl and node configurations
 ```
 ansible-playbook ansible/playbooks/kubectl.yaml
 ```
