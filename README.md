@@ -1,6 +1,6 @@
 ### Overview
 
-Openkube cluster is implemented with with below design making to give a complete flavor of on-prem cluser hosting. With this setup its real quick to spin up your own cluster for all sort of Devlopement and learning purpose.
+Openkube cluster is implemented with with below design to give a complete flavor of on-prem cluster hosting. With this setup its real quick to spin up your own cluster for all sort of Devlopement and learning purpose.
 
 This cluster with below architecture can be provisioned with even only one master node as well and it takes minimal resoures. All you need to update the ansible hosts file in this repository with  your virtual machine IP addresses. 
 
