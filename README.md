@@ -5,7 +5,7 @@ Openkube cluster is implemented with with below design to give a complete flavor
 This cluster with below architecture can be provisioned with even only one master node as well and it takes minimal resoures. All you need to update the ansible hosts file in this repository with  your virtual machine IP addresses. 
 
 
-<img src="https://github.com/openkubeio/openkube-cluster/raw/master/architecture.PNG" width="600">
+<img src="https://github.com/openkubeio/openkube-cluster/raw/master/resources/architecture.PNG" width="600">
 
 
 ### Check all virtual machines are rechable	
