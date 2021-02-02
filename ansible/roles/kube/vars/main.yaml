@@ -1,3 +1,2 @@
 ---
-LOAD_BALANCER_DNS: quicks-oc-1090.openkube.io
-LOAD_BALANCER_PORT: 8443
+EXTRA_SANS: "{{ LOAD_BALANCER_DNS }},quicks-oc-1090.openkube.io"

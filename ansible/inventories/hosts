@@ -20,4 +20,9 @@ worker3   ansible_ssh_host=worker3.openkube.io       ip=192.172.100.108
 [all:vars]
 ansible_connection=ssh 
 ansible_user=vagrant 
-ansible_password=
+#ansible_password=
+
+LOAD_BALANCER_DNS=192.172.10.90
+LOAD_BALANCER_PORT=8443
+
+
