@@ -1,19 +1,18 @@
 [capasity]
-nfs       ansible_ssh_host=192.172.10.90             ip=192.172.10.90
-lbr       ansible_ssh_host=192.172.10.90             ip=192.172.10.90
+nfs       ansible_ssh_host=192.172.100.90             ip=192.172.100.90
+lbr       ansible_ssh_host=192.172.100.90             ip=192.172.100.90
 
 [controller]
-cntrl     ansible_ssh_host=192.172.10.90             ip=192.172.10.90    
+cntrl     ansible_ssh_host=192.172.100.90             ip=192.172.100.90    
 
 [master]
-master1   ansible_ssh_host=master1.openkube.io       ip=192.172.100.101
-master2   ansible_ssh_host=master2.openkube.io       ip=192.172.100.102
-master3   ansible_ssh_host=master3.openkube.io       ip=192.172.100.103
+master1   ansible_ssh_host=master1.openkube.io       ip=192.172.100.101    dedicated=proxy,nfs
+master2   ansible_ssh_host=master2.openkube.io       ip=192.172.100.102    dedicated=proxy
+master3   ansible_ssh_host=master3.openkube.io       ip=192.172.100.103    dedicated=proxy
 												       
 [worker]										       
-worker1   ansible_ssh_host=worker1.openkube.io       ip=192.172.100.106    dedicated=proxy,nfs
-worker2   ansible_ssh_host=worker2.openkube.io       ip=192.172.100.107    dedicated=
-worker3   ansible_ssh_host=worker3.openkube.io       ip=192.172.100.108    
+worker1   ansible_ssh_host=worker1.openkube.io       ip=192.172.100.106    
+worker2   ansible_ssh_host=worker2.openkube.io       ip=192.172.100.107     
  
 
 
@@ -22,7 +21,7 @@ ansible_connection=ssh
 ansible_user=vagrant 
 #ansible_password=
 
-LOAD_BALANCER_DNS=192.172.10.90
+LOAD_BALANCER_DNS=192.172.100.90
 LOAD_BALANCER_PORT=8443
 
 

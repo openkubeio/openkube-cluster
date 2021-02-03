@@ -7,7 +7,14 @@
 {% for host in servers_to_worker %}
 {% if 'dedicated' in hostvars[host]|list %}
 {% if hostvars[host]['dedicated'] is search("proxy")  %}
-          server {{ host }}   {{ hostvars[host].ip}}:30080 check 
+          server http-{{ host }}   {{ hostvars[host].ip}}:30080 check 
+{% endif %}
+{% endif %}
+{% endfor %}
+{% for host in servers_to_master %}
+{% if 'dedicated' in hostvars[host]|list %}
+{% if hostvars[host]['dedicated'] is search("proxy")  %}
+          server http-{{ host }}   {{ hostvars[host].ip}}:30080 check 
 {% endif %}
 {% endif %}
 {% endfor %}
@@ -26,7 +33,14 @@
           server ssl-{{ host }}   {{ hostvars[host].ip}}:30443 check 
 {% endif %}
 {% endif %}
-{% endfor %}  
+{% endfor %} 
+{% for host in servers_to_master %}
+{% if 'dedicated' in hostvars[host]|list %}
+{% if hostvars[host]['dedicated'] is search("proxy")  %}
+          server ssl-{{ host }}   {{ hostvars[host].ip}}:30443 check 
+{% endif %}
+{% endif %}
+{% endfor %}
 {% endif %}
       frontend master_client
           bind *:8443

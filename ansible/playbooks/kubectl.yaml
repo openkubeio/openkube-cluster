@@ -47,7 +47,8 @@
     - proxy
     - nfs
   tasks:
-  - shell: "kubectl label node {{ item[0] }}  infra/{{ item[1] }}=true"
+  - name: label worker nodes
+    shell: "kubectl label node {{ hostvars[item.0].ip }}   infra/{{ item[1] }}=true"
     when: 
     - hostvars[item.0]['dedicated'] is defined
     - hostvars[item.0]['dedicated'] is search(item.1)
@@ -55,8 +56,23 @@
     - "{{ groups['worker'] }}"
     - "{{ tags }}"
 
-  - shell: "kubectl taint node {{ item }}  dedicated=infra:NoSchedule"
+  - name: label master nodes 
+    shell: "kubectl label node {{ hostvars[item.0].ip }}   infra/{{ item[1] }}=true"
+    when: 
+    - hostvars[item.0]['dedicated'] is defined
+    - hostvars[item.0]['dedicated'] is search(item.1)
+    with_nested:
+    - "{{ groups['master'] }}"
+    - "{{ tags }}"
+
+  - name: taint worker node
+    shell: "kubectl taint node {{ hostvars[item].ip }} dedicated=infra:NoSchedule"
     when: 
     - hostvars[item].dedicated is defined
     with_items:
     - "{{ groups['worker'] }}"
+
+  - name: label node role master=ture 
+    shell: "kubectl label node {{ hostvars[item].ip }} node-role.kubernetes.io/master=true  --overwrite"
+    with_items:
+    - "{{ groups['master'] }}"

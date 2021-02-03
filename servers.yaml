@@ -1,9 +1,9 @@
 ---
-- name: quicks-oc-1090.openkube.io
+- name: quicks-oc-10090.openkube.io
   box: ubuntu/xenial64
-  cpus: 1
-  memory: 1024
-  ip: 192.172.10.90
+  cpus: 2
+  memory: 2048
+  ip: 192.172.100.90
   port: 10122
 - name: master1.openkube.io
   box: ubuntu/xenial64
@@ -25,14 +25,14 @@
   port: 10122
 - name: worker1.openkube.io
   box: ubuntu/xenial64
-  cpus: 1
-  memory: 1024
+  cpus: 4
+  memory: 8000
   ip: 192.172.100.106
   port: 10122
 - name: worker2.openkube.io
   box: ubuntu/xenial64
-  cpus: 1
-  memory: 1024
+  cpus: 2
+  memory: 6000
   ip: 192.172.100.107
   port: 10122
 - name: worker3.openkube.io
