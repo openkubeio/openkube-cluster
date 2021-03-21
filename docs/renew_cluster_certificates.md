@@ -10,4 +10,4 @@ kubeadm alpha certs renew all
 kubeadm init phase upload-certs --upload-certs
 
 
-
+## verify cluster
