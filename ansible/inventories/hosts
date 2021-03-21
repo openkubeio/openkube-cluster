@@ -1,26 +1,35 @@
 [capasity]
-nfs       ansible_ssh_host=master1.openkube.io        ip=192.172.100.101
-lbr       ansible_ssh_host=master1.openkube.io        ip=192.172.100.101
+nfs       ansible_ssh_host=infra.openkube.io         ip=192.172.100.100
+lbr       ansible_ssh_host=infra.openkube.io         ip=192.172.100.100
 
 [controller]
-cntrl     ansible_ssh_host=master1.openkube.io        ip=192.172.100.101    
+cntrl     ansible_ssh_host=infra.openkube.io         ip=192.172.100.100    
 
 [master]
-master1   ansible_ssh_host=master1.openkube.io        ip=192.172.100.101    dedicated=proxy,nfs
-
+master1   ansible_ssh_host=master1.openkube.io       ip=192.172.100.101    dedicated=proxy,nfs
+master2   ansible_ssh_host=master2.openkube.io       ip=192.172.100.102    dedicated=proxy
+master3   ansible_ssh_host=master3.openkube.io       ip=192.172.100.103    dedicated=proxy
 												       
 [worker]										       
-worker1   ansible_ssh_host=worker1.openkube.io        ip=192.172.100.106    
-worker2   ansible_ssh_host=worker2.openkube.io        ip=192.172.100.107     
- 
+worker1   ansible_ssh_host=worker1.openkube.io       ip=192.172.100.104    
+worker2   ansible_ssh_host=worker2.openkube.io       ip=192.172.100.105  
+
 
 
 [all:vars]
-ansible_connection=ssh 
+ansible_connection=ssh
 ansible_user=vagrant 
 ansible_password=abcd1234
 
+
 LOAD_BALANCER_DNS="{{ hostvars.lbr.ip }}"
 LOAD_BALANCER_PORT="8443"
+
+# Add extra DNS here to be the part of EXTRA_SANS 
+# EXTRA_SANS: "{{ LOAD_BALANCER_DNS }},{{ EXTRA_DNS }}"
+EXTRA_DNS="{{ hostvars.cntrl.ansible_ssh_host }}"
+
+INGRESS_HTTP_PORT="30080"
+INGRESS_HTTPS_PORT="30443"
 
 

@@ -3,8 +3,9 @@
 **/.vs/
 **/examples/
 
+#**/proxy.template.backup
 
-**/hosts
-**/servers.yaml
+**/data
+**/source.md
  
  
