@@ -37,7 +37,7 @@ Bootstrap the cluster as the design pattern followd in the hosts file while upda
 ansible-playbook ansible/playbooks/bootstrap.yaml
 ```
 
-This playbok will set up the controller with kubectl node configurations. 
+Playbok will set up the controller node with kubectl configurations. 
 With this node you can control the cluster and manage its deploymnet.
 ```
 ansible-playbook ansible/playbooks/kubectl.yaml
