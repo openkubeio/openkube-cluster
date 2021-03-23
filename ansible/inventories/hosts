@@ -19,7 +19,7 @@ worker2   ansible_ssh_host=worker2.openkube.io       ip=192.172.100.105
 [all:vars]
 ansible_connection=ssh
 ansible_user=vagrant 
-ansible_password=abcd1234
+#ansible_password=
 
 
 LOAD_BALANCER_DNS="{{ hostvars.lbr.ip }}"
