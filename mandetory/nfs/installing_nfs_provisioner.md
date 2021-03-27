@@ -1,6 +1,6 @@
 ###  Export NFS_SERVER 
 
-Exoprt nfs server address. Replace the below with ansible outcome of the nfs server. 
+Exoprt nfs server address. Replace the below with ansible outcome of the nfs server. <br/>
 ansible nfs -m shell -a 'echo "{{ hostvars.nfs.ip }}"'
 
 ```
