@@ -1,16 +1,24 @@
 
-# Official haproxy kubernetes ingress 
-# https://github.com/haproxytech/helm-charts/tree/kubernetes-ingress-1.12.0/kubernetes-ingress
-# Refer the below values.yaml for more customization on ingress controller
-# https://github.com/haproxytech/helm-charts/blob/master/kubernetes-ingress/values.yaml
+### Official haproxy kubernetes ingress 
+>https://github.com/haproxytech/helm-charts/tree/kubernetes-ingress-1.12.0/kubernetes-ingress
+
+### Refer the below values.yaml for more customization on ingress controller
+>https://github.com/haproxytech/helm-charts/blob/master/kubernetes-ingress/values.yaml
 
 
+### Pull haproxy helm chart 
+
+```
 helm repo add haproxytech https://haproxytech.github.io/helm-charts
 
 helm repo update
 
 helm pull haproxytech/kubernetes-ingress --version 1.5.0
+```
 
+### Install haproxy helm chart
+
+```
 cat << EOF | helm install haproxy kubernetes-ingress-1.5.0.tgz --values - 
 controller:
   kind: DaemonSet
@@ -26,8 +34,10 @@ controller:
     effect: NoSchedule
     operator: "Exists"
 EOF
+```
 
-
+### Create a haproxy ingress dashboard 
+```
 cat << EOF | kubectl apply -f -
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -43,6 +53,10 @@ spec:
           serviceName: haproxy-kubernetes-ingress
           servicePort: 1024
 EOF
+```
 
+### Delete haproxy helm chart
 
-# helm delete haproxy
+```
+helm delete haproxy
+```

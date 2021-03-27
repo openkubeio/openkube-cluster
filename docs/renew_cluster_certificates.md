@@ -40,8 +40,3 @@ done
 for i in 192.172.100.101 192.172.100.102 192.172.100.103;  
 do ssh vagrant@$i 'sudo kubeadm alpha certs check-expiration '  ;
 done
-
-
-
-
-
