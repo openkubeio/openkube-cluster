@@ -2,7 +2,7 @@
 kubeadm alpha certs check-expiration 
 
 
-### Renew the certs (all certs)
+### Renew the certs (all certs) on all nodes
 kubeadm alpha certs renew all    
 
 
@@ -10,7 +10,7 @@ kubeadm alpha certs renew all
 kubeadm init phase upload-certs --upload-certs
 
 
-## testing 
+## Expire the certificates to replicate scenario 
 
 for i in 192.172.100.101 192.172.100.102 192.172.100.103 192.172.100.104 192.172.100.105; 
 do ssh vagrant@$i 'sudo kubeadm alpha certs check-expiration' ; 

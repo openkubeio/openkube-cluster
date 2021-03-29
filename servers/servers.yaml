@@ -29,14 +29,14 @@
 
 - name: worker1.openkube.io
   box: ubuntu/xenial64
-  cpus: 2
-  memory: 2048
+  cpus: 4
+  memory: 8048
   ip: 192.172.100.104
   port: 10122
 
 - name: worker2.openkube.io
   box: ubuntu/xenial64
-  cpus: 2
+  cpus: 1
   memory: 2048
   ip: 192.172.100.105
   port: 10122
