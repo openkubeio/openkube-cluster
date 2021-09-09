@@ -5,6 +5,7 @@
 ### Refer the below values.yaml for more customization on ingress controller
 >https://github.com/haproxytech/helm-charts/blob/master/kubernetes-ingress/values.yaml
 
+>https://artifacthub.io/packages/helm/haproxytech/kubernetes-ingress
 
 ### Pull haproxy helm chart 
 
